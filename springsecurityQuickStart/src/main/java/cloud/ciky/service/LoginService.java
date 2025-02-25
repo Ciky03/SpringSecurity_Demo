@@ -17,4 +17,9 @@ public interface LoginService {
      */
     ResponseResult login(User user);
 
+    /**
+     * 退出登录
+     * @return
+     */
+    ResponseResult logout();
 }
