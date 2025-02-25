@@ -19,7 +19,7 @@ public class JwtUtil {
     //有效期为
     public static final Long JWT_TTL = 60 * 60 * 1000L;// 60 * 60 *1000  一个小时
     //设置秘钥明文
-    public static final String JWT_KEY = "ciky";
+    public static final String JWT_KEY = "ciky1907";
 
     public static String getUUID() {
         String token = UUID.randomUUID().toString().replaceAll("-", "");
@@ -62,7 +62,7 @@ public class JwtUtil {
         return Jwts.builder()
                 .setId(uuid)              //唯一的ID
                 .setSubject(subject)   // 主题  可以是JSON数据
-                .setIssuer("sg")     // 签发者
+                .setIssuer("ciky")     // 签发者
                 .setIssuedAt(now)      // 签发时间
                 .signWith(signatureAlgorithm, secretKey) //使用HS256对称加密算法签名, 第二个参数为秘钥
                 .setExpiration(expDate);
@@ -82,7 +82,9 @@ public class JwtUtil {
     }
 
     public static void main(String[] args) throws Exception {
-        String token = "eyJhbGciOiJIUzI1NiJ9.eyJqdGkiOiJjYWM2ZDVhZi1mNjVlLTQ0MDAtYjcxMi0zYWEwOGIyOTIwYjQiLCJzdWIiOiJzZyIsImlzcyI6InNnIiwiaWF0IjoxNjM4MTA2NzEyLCJleHAiOjE2MzgxMTAzMTJ9.JVsSbkP94wuczb4QryQbAke3ysBDIL5ou8fWsbt_ebg";
+//        String jwt = createJWT("123456");
+//        System.out.println(jwt);
+        String token = "eyJhbGciOiJIUzI1NiJ9.eyJqdGkiOiI4YzFjNTY4ZjQ4MGQ0NTIzYTU4ZTRkMDZjMTBmNTBmOCIsInN1YiI6IjIiLCJpc3MiOiJzZyIsImlhdCI6MTc0MDQ1OTQ1MSwiZXhwIjoxNzQwNDYzMDUxfQ.l-bBez9ClLn1M2kicF-D5zD8efAP1vCiqu3haA4vt5o";
         Claims claims = parseJWT(token);
         System.out.println(claims);
     }
