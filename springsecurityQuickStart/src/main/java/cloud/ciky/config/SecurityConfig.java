@@ -1,6 +1,8 @@
 package cloud.ciky.config;
 
 import cloud.ciky.filter.JwtAuthenticationTokenFilter;
+import cloud.ciky.handler.AccessDeniedHandlerImpl;
+import cloud.ciky.handler.AuthenticationEntryPointImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -24,6 +26,12 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Autowired
     private JwtAuthenticationTokenFilter jwtAuthenticationTokenFilter;
+
+    @Autowired
+    private AuthenticationEntryPointImpl authenticationEntryPoint;
+
+    @Autowired
+    private AccessDeniedHandlerImpl accessDeniedHandler;
 
 
     //创建BCryptPasswordEncoder注入容器
@@ -56,5 +64,12 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         //添加 jwt认证过滤器 到过滤器链中
         //(在UsernamePasswordAuthenticationFilter之前)
         http.addFilterBefore(jwtAuthenticationTokenFilter, UsernamePasswordAuthenticationFilter.class);
+
+        //配置异常
+        http.exceptionHandling()
+                //配置认证失败处理器
+                .authenticationEntryPoint(authenticationEntryPoint)
+                //配置授权失败处理器
+                .accessDeniedHandler(accessDeniedHandler);
     }
 }
