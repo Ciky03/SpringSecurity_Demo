@@ -1,6 +1,7 @@
 package cloud.ciky;
 
 import cloud.ciky.domain.User;
+import cloud.ciky.mapper.MenuMapper;
 import cloud.ciky.mapper.UserMapper;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,5 +36,13 @@ public class MapperTest {
 
         System.out.println(encode);
         System.out.println(encode2);
+    }
+
+    @Autowired
+    private MenuMapper menuMapper;
+
+    @Test
+    public void testSelectPermsByUserId(){
+        System.out.println(menuMapper.selectPermsByUserId(2L));
     }
 }
