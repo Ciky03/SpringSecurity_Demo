@@ -2,6 +2,7 @@ package cloud.ciky.service.impl;
 
 import cloud.ciky.domain.LoginUser;
 import cloud.ciky.domain.User;
+import cloud.ciky.mapper.MenuMapper;
 import cloud.ciky.mapper.UserMapper;
 import com.alibaba.fastjson.JSON;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
@@ -29,6 +30,9 @@ public class UserDetailServiceImpl implements UserDetailsService {
     @Autowired
     private UserMapper userMapper;
 
+    @Autowired
+    private MenuMapper menuMapper;
+
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         //1.查询用户信息
@@ -41,9 +45,9 @@ public class UserDetailServiceImpl implements UserDetailsService {
         }
 
         //2.查询对应的权限信息
-        List<String> permission = new ArrayList<>(Arrays.asList("test","admin"));
+        List<String> permissions = menuMapper.selectPermsByUserId(user.getId());
 
         //3. 把数据封装成UserDetails返回
-        return new LoginUser(user, permission);
+        return new LoginUser(user, permissions);
     }
 }
