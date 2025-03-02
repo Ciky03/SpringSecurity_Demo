@@ -1,11 +1,14 @@
 package cloud.ciky.service.impl;
 
+import cloud.ciky.domain.AuthParamsDto;
 import cloud.ciky.domain.LoginUser;
 import cloud.ciky.domain.ResponseResult;
 import cloud.ciky.domain.User;
 import cloud.ciky.service.LoginService;
 import cloud.ciky.utils.JwtUtil;
 import cloud.ciky.utils.RedisCache;
+import com.alibaba.fastjson.JSON;
+import net.minidev.json.JSONUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -33,10 +36,10 @@ public class LoginServiceImpl implements LoginService {
     private RedisCache redisCache;
 
     @Override
-    public ResponseResult login(User user) {
+    public ResponseResult login(AuthParamsDto authParamsDto) {
 
         //AuthenticationManager authenticate进行用户认证
-        UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(user.getUserName(), user.getPassword());
+        UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(JSON.toJSONString(authParamsDto), authParamsDto.getPassword());
         Authentication authenticate = authenticationManager.authenticate(authenticationToken);
 
         //如果认证没通过--> 给出对应的提示

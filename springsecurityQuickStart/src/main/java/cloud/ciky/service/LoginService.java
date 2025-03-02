@@ -1,5 +1,6 @@
 package cloud.ciky.service;
 
+import cloud.ciky.domain.AuthParamsDto;
 import cloud.ciky.domain.ResponseResult;
 import cloud.ciky.domain.User;
 
@@ -8,14 +9,14 @@ import cloud.ciky.domain.User;
  * @Description: 登录接口
  * @DateTime: 2025/2/25 11:14
  **/
-public interface LoginService {
+    public interface LoginService {
 
     /**
      * 登录
-     * @param user
+     * @param authParamsDto
      * @return
      */
-    ResponseResult login(User user);
+    ResponseResult login(AuthParamsDto authParamsDto);
 
     /**
      * 退出登录

@@ -1,5 +1,6 @@
 package cloud.ciky.controller;
 
+import cloud.ciky.domain.AuthParamsDto;
 import cloud.ciky.domain.ResponseResult;
 import cloud.ciky.domain.User;
 import cloud.ciky.service.LoginService;
@@ -21,9 +22,9 @@ public class LoginController {
     private LoginService loginService;
 
     @PostMapping("/user/login")
-    public ResponseResult login(@RequestBody User user){
+    public ResponseResult login(@RequestBody AuthParamsDto authParamsDto){
         //登录
-        return loginService.login(user);
+        return loginService.login(authParamsDto);
     }
 
     @RequestMapping("/user/logout")
