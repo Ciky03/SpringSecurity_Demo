@@ -1,23 +1,19 @@
 package cloud.ciky.service.impl;
 
+import cloud.ciky.domain.AuthParamsDto;
 import cloud.ciky.domain.LoginUser;
 import cloud.ciky.domain.User;
 import cloud.ciky.mapper.MenuMapper;
-import cloud.ciky.mapper.UserMapper;
+import cloud.ciky.service.AuthService;
 import com.alibaba.fastjson.JSON;
-import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationContext;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
-import javax.annotation.Resource;
-import java.time.Period;
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
-import java.util.Objects;
 
 /**
  * @Author: ciky
@@ -28,26 +24,32 @@ import java.util.Objects;
 public class UserDetailServiceImpl implements UserDetailsService {
 
     @Autowired
-    private UserMapper userMapper;
-
-    @Autowired
     private MenuMapper menuMapper;
 
-    @Override
-    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        //1.查询用户信息
-        User user = userMapper.selectOne(
-                new LambdaQueryWrapper<User>().eq(User::getUserName, username));
+    @Autowired
+    private ApplicationContext applicationContext;
 
-        //如果没有查询到用户-->抛出异常
-        if(Objects.isNull(user)){
-            throw new RuntimeException("用户名或者密码错误");
+    @Override
+    public UserDetails loadUserByUsername(String authParamsDtoJsonStr) throws UsernameNotFoundException {
+        //将authParamsDtoStr字符串转成AuthParamsDto对象
+        AuthParamsDto authParamsDto = null;
+        try {
+            authParamsDto = JSON.parseObject(authParamsDtoJsonStr,AuthParamsDto.class);
+        } catch (Exception e) {
+            throw new RuntimeException("认证请求数据格式不正确");
         }
 
-        //2.查询对应的权限信息
+        //获取认证类型
+        String authType = authParamsDto.getAuthType();
+        //根据认证类型从spring容器中取出指定的bean
+        String beanName = authType + "_authservice";
+        AuthService bean = applicationContext.getBean(beanName, AuthService.class);
+        //调用统一的excute方法
+        User user = bean.execute(authParamsDto);
+
+        //查询对应的权限信息
         List<String> permissions = menuMapper.selectPermsByUserId(user.getId());
 
-        //3. 把数据封装成UserDetails返回
-        return new LoginUser(user, permissions);
+        return new LoginUser(user,permissions);
     }
 }
