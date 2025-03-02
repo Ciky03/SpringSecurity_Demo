@@ -3,10 +3,12 @@ package cloud.ciky.config;
 import cloud.ciky.filter.JwtAuthenticationTokenFilter;
 import cloud.ciky.handler.AccessDeniedHandlerImpl;
 import cloud.ciky.handler.AuthenticationEntryPointImpl;
+import cloud.ciky.service.impl.DaoAuthenticationProviderImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
@@ -33,6 +35,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     @Autowired
     private AccessDeniedHandlerImpl accessDeniedHandler;
 
+    @Autowired
+    private DaoAuthenticationProviderImpl daoAuthenticationProvider;
+
 
     //创建BCryptPasswordEncoder注入容器
     @Bean
@@ -45,6 +50,12 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     @Override
     public AuthenticationManager authenticationManagerBean() throws Exception {
         return super.authenticationManagerBean();
+    }
+
+    //告诉SpringSecurity框架我们自定义的DaoAuthenticationProvider是哪个
+    @Override
+    protected void configure(AuthenticationManagerBuilder auth) throws Exception {
+        auth.authenticationProvider(daoAuthenticationProvider);
     }
 
     @Override
